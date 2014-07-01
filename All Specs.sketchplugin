@@ -1,0 +1,85 @@
+#import 'sandbox.js'
+
+function main() {
+  var exportPath = requestTargetPath();
+  var specLayers = findLayersStartingWith('$');
+  var page = [doc currentPage];
+
+  hideLayers(specLayers);
+
+  for (var y=0; y < specLayers.length; y++) {
+    var currentSpecLayer = specLayers[y];
+    [currentSpecLayer setIsVisible:true];
+
+    var slice = createSliceFromCurrentPage();
+    slice.name = sanitize_filename([page name].toLowerCase() + "-" + [currentSpecLayer name]);
+
+    [doc saveArtboardOrSlice:slice toFile:exportPath + "/" + [slice name] + "-" + (new Date().getTime()) + ".png"];
+
+    // Remove when done exporting
+    [page removeLayer:slice];
+
+    // Hide each spec layer when we're done exporting it - get them out of the way!
+    [currentSpecLayer setIsVisible:false];
+  }
+}
+
+function createSliceFromCurrentPage() {
+  var page = [doc currentPage];
+  
+  var rect = CGRectMake([[page contentBounds] x], [[page contentBounds] y], [[page contentBounds] width], [[page contentBounds] height]);
+  var slice = [MSExportRequest requestWithRect:rect scale:1];
+  [slice setBackgroundColor:[MSColor whiteColor]];
+
+  log([slice rect]);
+
+  [page removeLayer:rect];
+
+  return slice;
+}
+
+function requestTargetPath() {
+  var directoryPanel = [NSOpenPanel openPanel];
+  [directoryPanel setCanChooseDirectories:true];
+  [directoryPanel setCanCreateDirectories:true];
+  [directoryPanel setDirectoryURL:[NSURL fileURLWithPath:"~/Documents/"]]
+  [directoryPanel setTitle:@"Choose a directory to export to"];
+  [directoryPanel setPrompt:@"Choose"];
+
+  var openPanelButtonPressed = [directoryPanel runModal];
+  if (openPanelButtonPressed == NSFileHandlingPanelOKButton) {
+    var selectedURL = [directoryPanel URL];
+    new AppSandbox().authorize([selectedURL path], fake);
+    return [selectedURL path];
+  }
+}
+
+function fake() {
+
+}
+
+function findLayersStartingWith(prefix) {
+  var layers = [[doc currentPage] layers];
+  var foundLayers = new Array();
+
+  for (var x=0; x < [layers count]; x++) {
+    var layer = layers.array()[x];
+    if ([layer name].startsWith(prefix)) {
+      foundLayers.push(layer);
+    }
+  }
+  return foundLayers;
+}
+
+function hideLayers(layers) {
+  for (var y=0; y < layers.length; y++)   {
+    var layer = layers[y];
+    [layer setIsVisible:false];
+  }
+}
+
+function sanitize_filename(name){
+  return name.replace(/(\s+|\:|\/)/g ,"_");
+}
+
+main();
