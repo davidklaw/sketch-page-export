@@ -6,11 +6,11 @@ Layer Structure
 ---
 I just realized I didn't account for artboards and how easy it is to struggle with layering the layers over top and outside of their respective artboards. I'll address this next.
 
-![File Structure](http://cl.ly/image/1y3c1O3O2h2X)
+![File Structure](http://cl.ly/image/1y3c1O3O2h2X/sketch-export-pages-1.png)
 
-![Example Output 1](http://cl.ly/image/3K2H2j0r0q0A)
+![Example Output 1](http://cl.ly/image/3K2H2j0r0q0A/great_app-$PROPERTIES-1404226398226.png)
 
-![Example Output 2](http://cl.ly/image/2e363R0L2o3F)
+![Example Output 2](http://cl.ly/image/2e363R0L2o3F/great_app-$LAYOUT-1404226398383.png)
 
 ##Contact
 Check me out on Twitter [@davidklaw](http://twitter.com/davidklaw)
